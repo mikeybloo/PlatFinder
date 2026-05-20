@@ -1,5 +1,6 @@
 from colorama import Fore
 from mss import MSS
+import pygetwindow
 import mss.tools
 import psutil
 import keyboard
@@ -10,21 +11,23 @@ import time
 isRunning = False
 screenshottingEnabled = False
 
-def main():
-    global isRunning
-    while(True):
-        if "Warframe.x64.exe" in (i.name() for i in psutil.process_iter()):
-            isRunning = True
-            print(Fore.GREEN + "Warframe is running!" + Fore.RESET)
-        else:
-            isRunning = False
-            print(Fore.RED + "Warframe is not running!" + Fore.RESET)
+def getWarframeWindow():
+    gameWindows = pygetwindow.getWindowsWithTitle("testScreenshot.png")
 
-        time.sleep(2)
+    if gameWindows:
+        return(gameWindows[0])
+    else: 
+        print("No 'testScreenshot.png' window found!")
 
 def toggleScreenshotting():
     global isRunning
     global screenshottingEnabled
+
+    activeWindow = pygetwindow.getActiveWindow()
+
+    if "Warframe" not in activeWindow.title:
+        print("Warframe is not focused!!")
+        return 
 
     if isRunning and not screenshottingEnabled:
         screenshottingEnabled = True
@@ -38,19 +41,37 @@ def screenshotting():
     global isRunning
     global screenshottingEnabled
 
-    if isRunning and screenshottingEnabled:
+    while isRunning and screenshottingEnabled:
         with MSS() as sct:
-            monitor = sct.monitors[2]
-            screenshot = sct.grab(monitor)
+            window = getWarframeWindow()
+            screenshotParameters = {
+                "top": window.top,
+                "left": window.left,
+                "width": window.width,
+                "height": window.height
+            }
+
+            print(screenshotParameters)
+            
+            screenshot = sct.grab(screenshotParameters)
             fileName = "screenshot.png"
 
             mss.tools.to_png(screenshot.rgb, screenshot.size, output=fileName)
             print(fileName)
+        
+        time.sleep(0.5)
 
-    elif isRunning and not screenshottingEnabled:
-        exit()
+def main():
+    global isRunning
+    while(True):
+        if "Warframe.x64.exe" in (i.name() for i in psutil.process_iter()):
+            isRunning = True
+            print(Fore.GREEN + "Warframe is running!" + Fore.RESET)
+        else:
+            isRunning = False
+            print(Fore.RED + "Warframe is not running!" + Fore.RESET)
 
-    time.sleep(1)
+        time.sleep(2)
 
 def exitProgram():
     print(Fore.CYAN + "Program exited!" + Fore.RESET)
