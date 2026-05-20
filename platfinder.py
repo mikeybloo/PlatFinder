@@ -7,9 +7,13 @@ import keyboard
 import os
 import threading
 import time
+import easyocr
+import numpy as np
+import cv2
 
 isRunning = False
 screenshottingEnabled = False
+reader = easyocr.Reader(['en'], gpu=False)
 
 def getWarframeWindow():
     gameWindows = pygetwindow.getWindowsWithTitle("testScreenshot.png")
@@ -27,7 +31,7 @@ def toggleScreenshotting():
 
     if "Warframe" not in activeWindow.title:
         print("Warframe is not focused!!")
-        return 
+        #return 
 
     if isRunning and not screenshottingEnabled:
         screenshottingEnabled = True
@@ -56,10 +60,25 @@ def screenshotting():
             screenshot = sct.grab(screenshotParameters)
             fileName = "screenshot.png"
 
-            mss.tools.to_png(screenshot.rgb, screenshot.size, output=fileName)
+            img = np.array(screenshot)
+            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+            crop = img[380:480, 400:1520]
+
+            scanScreenshot(crop)
+
+            cv2.imwrite(fileName, crop)
             print(fileName)
-        
-        time.sleep(0.5)
+            
+        time.sleep(1)
+
+def scanScreenshot(crop):
+    global reader
+
+    print("Now scanning screenshot...")
+    result = reader.readtext(crop, detail = 0)
+    print("Screenshot scanned!")
+    print(result)
+    
 
 def main():
     global isRunning
