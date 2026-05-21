@@ -7,6 +7,6 @@ def exitProgram():
     print(Fore.CYAN + "Program exited!" + Fore.RESET)
     os._exit(0)
 
-def mapHotkeysToKeyboard():
+def mapHotkeysToKeyboard(appState):
     keyboard.add_hotkey("shift+f12", exitProgram)
-    keyboard.add_hotkey("shift+f5", toggleScreenshotting)
+    keyboard.add_hotkey("shift+f5", lambda: toggleScreenshotting(appState))

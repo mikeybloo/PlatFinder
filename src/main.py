@@ -19,16 +19,16 @@ def main(appState):
             print(Fore.GREEN + "Warframe is running!" + Fore.RESET)
         else:
             appState.isRunning = False
-            print(Fore.RED + "Warframe is not running!" + Fore.RESET)
+            print(Fore.RED + "Warframe is not running! Please run the game to use this tool" + Fore.RESET)
 
-        time.sleep(2)
+        time.sleep(10)
 
 appState = AppState()
 
-print(Fore.YELLOW + "Initializing easyOCR... \n" + Fore.RESET)
+print(Fore.YELLOW + "Initializing easyOCR..." + Fore.RESET)
 appState.reader = easyocr.Reader(['en'], gpu=False)
 
-mapHotkeysToKeyboard()
+mapHotkeysToKeyboard(appState)
 
 print(Fore.BLUE + r"__________.__          __ ___________.__            .___            ") 
 print(Fore.BLUE + r"\______   \  | _____ _/  |\_   _____/|__| ____    __| _/___________ ") 
