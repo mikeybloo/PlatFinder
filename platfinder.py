@@ -10,18 +10,29 @@ import time
 import easyocr
 import numpy as np
 import cv2
+from apiCaller import getRequest
 
 isRunning = False
 screenshottingEnabled = False
+print(Fore.YELLOW + "Initializing easyOCR... \n" + Fore.RESET)
 reader = easyocr.Reader(['en'], gpu=False)
 
+print(Fore.BLUE + r"__________.__          __ ___________.__            .___            ") 
+print(Fore.BLUE + r"\______   \  | _____ _/  |\_   _____/|__| ____    __| _/___________ ") 
+print(Fore.BLUE + r" |     ___/  | \__  \\   __\    __)  |  |/    \  / __ |/ __ \_  __ \\") 
+print(Fore.BLUE + r" |    |   |  |__/ __ \|  | |     \   |  |   |  \/ /_/ \  ___/|  | \/") 
+print(Fore.BLUE + r" |____|   |____(____  /__| \___  /   |__|___|  /\____ |\___  >__|   ") 
+print(Fore.BLUE + r"                    \/         \/            \/      \/    \/       ")
+print(Fore.RESET)
+print(Fore.GREEN + "PlatFinder is RUNNING... \n" + Fore.CYAN + "Press shift+F5 to start scanning your drops\n" + Fore.RED + "Press shift+F12 to close the program" + Fore.RESET)
+
 def getWarframeWindow():
-    gameWindows = pygetwindow.getWindowsWithTitle("testScreenshot.png")
+    gameWindows = pygetwindow.getWindowsWithTitle("Warframe")
 
     if gameWindows:
         return(gameWindows[0])
     else: 
-        print("No 'testScreenshot.png' window found!")
+        print("No 'Warframe' window found!")
 
 def toggleScreenshotting():
     global isRunning
@@ -31,11 +42,12 @@ def toggleScreenshotting():
 
     if "Warframe" not in activeWindow.title:
         print("Warframe is not focused!!")
-        #return 
+        return
 
     if isRunning and not screenshottingEnabled:
         screenshottingEnabled = True
         print(Fore.CYAN + "Screenshotting enabled!" + Fore.RESET)
+
         threading.Thread(target=screenshotting).start()
     elif isRunning and screenshottingEnabled:
         screenshottingEnabled = False
@@ -77,7 +89,7 @@ def scanScreenshot(crop):
     print("Now scanning screenshot...")
     result = reader.readtext(crop, detail = 0)
     print("Screenshot scanned!")
-    print(result)
+    print("Recognized: " + result)
     
 
 def main():
@@ -97,16 +109,6 @@ def exitProgram():
     os._exit(1)
         
 keyboard.add_hotkey("shift+f12", exitProgram)
-keyboard.add_hotkey("shift+space", toggleScreenshotting)
-
-print(Fore.BLUE + r"__________.__          __ ___________.__            .___            ") 
-print(Fore.BLUE + r"\______   \  | _____ _/  |\_   _____/|__| ____    __| _/___________ ") 
-print(Fore.BLUE + r" |     ___/  | \__  \\   __\    __)  |  |/    \  / __ |/ __ \_  __ \\") 
-print(Fore.BLUE + r" |    |   |  |__/ __ \|  | |     \   |  |   |  \/ /_/ \  ___/|  | \/") 
-print(Fore.BLUE + r" |____|   |____(____  /__| \___  /   |__|___|  /\____ |\___  >__|   ") 
-print(Fore.BLUE + r"                    \/         \/            \/      \/    \/       ")
-print(Fore.RESET)
-print(Fore.GREEN + "PlatFinder is running... \n" + Fore.RED + "Press shift+F12 to close the program")
-print(Fore.RESET)
+keyboard.add_hotkey("shift+f5", toggleScreenshotting)
 
 main()
