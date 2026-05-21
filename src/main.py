@@ -1,14 +1,10 @@
 from colorama import Fore
+from mapHotkeys import mapHotkeysToKeyboard
 import psutil
 import keyboard
-import sys
 import time
 import easyocr
 import cv2
-
-isRunning = False
-screenshottingEnabled = False
-
 
 class AppState:
     def __init__(self):
@@ -27,13 +23,12 @@ def main(appState):
 
         time.sleep(2)
 
-def exitProgram():
-    print(Fore.CYAN + "Program exited!" + Fore.RESET)
-    sys.exit(0)
-
 appState = AppState()
+
 print(Fore.YELLOW + "Initializing easyOCR... \n" + Fore.RESET)
 appState.reader = easyocr.Reader(['en'], gpu=False)
+
+mapHotkeysToKeyboard()
 
 print(Fore.BLUE + r"__________.__          __ ___________.__            .___            ") 
 print(Fore.BLUE + r"\______   \  | _____ _/  |\_   _____/|__| ____    __| _/___________ ") 

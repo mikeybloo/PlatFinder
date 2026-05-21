@@ -5,8 +5,8 @@ import threading
 import numpy as np
 import cv2
 import time
-from src.warframeDetector import getWarframeWindow
-from src.scanning import scanScreenshot
+from warframeDetector import getWarframeWindow
+from scanning import scanScreenshot
 from pathlib import Path
 
 def toggleScreenshotting(appState):
