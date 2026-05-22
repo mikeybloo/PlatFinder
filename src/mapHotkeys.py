@@ -9,4 +9,4 @@ def exitProgram():
 
 def mapHotkeysToKeyboard(appState):
     keyboard.add_hotkey("shift+f12", exitProgram)
-    keyboard.add_hotkey("shift+f5", lambda: toggleScreenshotting(appState))
+    keyboard.add_hotkey("shift+f5", lambda: toggleScreenshotting(appState), suppress=True)

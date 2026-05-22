@@ -1,36 +1,50 @@
 import mss as MSS
 import pygetwindow
 from colorama import Fore
-import threading
 import numpy as np
 import cv2
 import time
 from warframeDetector import getWarframeWindow
 from scanning import scanScreenshot
-from pathlib import Path
+import os
+from utility import title
+
+def screenshotListener(appState):
+    while True:
+        if not appState.screenshottingEnabled:
+            time.sleep(0.1)
+            continue
+
+        try:
+            screenshotting(appState)
+        except Exception as e:
+            print(f"Error: {e}")
+
+        appState.screenshottingEnabled = False
 
 def toggleScreenshotting(appState):
     activeWindow = pygetwindow.getActiveWindow()
 
-    if "Warframe" not in activeWindow.title:
+    if not activeWindow or "Warframe" not in activeWindow.title:
         print("Warframe is not focused!!")
         return
 
-    if appState.isRunning and not appState.screenshottingEnabled:
-        appState.screenshottingEnabled = True
-        print(Fore.CYAN + "Screenshotting enabled!" + Fore.RESET)
+    if not appState.isWarframeRunning:
+        print(Fore.RED + "Warframe must be running in order to be able to scan drops!" + Fore.RESET)
+        return
 
-        thread = threading.Thread(target=screenshotting, args=(appState,), daemon=True)
-        thread.start()
-    elif appState.isRunning and appState.screenshottingEnabled:
-        appState.screenshottingEnabled = False
-        print(Fore.CYAN + "Screenshotting disabled!" + Fore.RESET)
+    if appState.screenshottingEnabled:
+        print(Fore.RED + "Scanning in process please wait for results before retrying!" + Fore.RESET)
+        return
+    
+    appState.screenshottingEnabled = True
+
+    os.system('cls')
+    title()
+    print(Fore.CYAN + "Scanning enabled!" + Fore.RESET)
 
 def screenshotting(appState):
-    ROOT_PATH = Path(__file__).resolve().parent.parent
-    appState.screenshottingEnabled
-
-    while appState.isRunning and appState.screenshottingEnabled:
+    while appState.isWarframeRunning and appState.screenshottingEnabled:
         with MSS.mss() as sct:
             window = getWarframeWindow()
             screenshotParameters = {
@@ -43,7 +57,7 @@ def screenshotting(appState):
             #print(screenshotParameters)
             
             screenshot = sct.grab(screenshotParameters)
-            fileName = "screenshot.png"
+            #fileName = "screenshot.png"
 
             img = np.array(screenshot)
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
