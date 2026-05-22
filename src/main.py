@@ -30,13 +30,13 @@ appState.reader = easyocr.Reader(['en'], gpu=False)
 
 mapHotkeysToKeyboard(appState)
 
-print(Fore.BLUE + r"__________.__          __ ___________.__            .___            ") 
-print(Fore.BLUE + r"\______   \  | _____ _/  |\_   _____/|__| ____    __| _/___________ ") 
-print(Fore.BLUE + r" |     ___/  | \__  \\   __\    __)  |  |/    \  / __ |/ __ \_  __ \\") 
-print(Fore.BLUE + r" |    |   |  |__/ __ \|  | |     \   |  |   |  \/ /_/ \  ___/|  | \/") 
-print(Fore.BLUE + r" |____|   |____(____  /__| \___  /   |__|___|  /\____ |\___  >__|   ") 
-print(Fore.BLUE + r"                    \/         \/            \/      \/    \/       ")
-print(Fore.RESET)
+print(r"__________.__          __ " + Fore.BLUE + r"___________.__            .___            " + Fore.RESET)
+print(r"\______   \  | _____ _/  |" + Fore.BLUE + r"\_   _____/|__| ____    __| _/___________ " + Fore.RESET)
+print(r" |     ___/  | \__  \\   __" + Fore.BLUE + r"\    __)  |  |/    \  / __ |/ __ \_  __ \\" + Fore.RESET)
+print(r" |    |   |  |__/ __ \|  | " + Fore.BLUE + r"|     \   |  |   |  \/ /_/ \  ___/|  | \/" + Fore.RESET)
+print(r" |____|   |____(____  /__| " + Fore.BLUE + r"\___  /   |__|___|  /\____ |\___  >__|   " + Fore.RESET)
+print(r"                    \/       " + Fore.BLUE + r"  \/            \/      \/    \/       " + Fore.RESET)
+
 print(Fore.GREEN + "PlatFinder is RUNNING... \n" + Fore.CYAN + "Press shift+F5 to start scanning your drops\n" + Fore.RED + "Press shift+F12 to close the program" + Fore.RESET)
 
 main(appState)

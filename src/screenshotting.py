@@ -20,7 +20,7 @@ def toggleScreenshotting(appState):
         appState.screenshottingEnabled = True
         print(Fore.CYAN + "Screenshotting enabled!" + Fore.RESET)
 
-        thread = threading.Thread(target=screenshotting, daemon=True)
+        thread = threading.Thread(target=screenshotting, args=(appState,), daemon=True)
         thread.start()
     elif appState.isRunning and appState.screenshottingEnabled:
         appState.screenshottingEnabled = False
@@ -31,7 +31,7 @@ def screenshotting(appState):
     appState.screenshottingEnabled
 
     while appState.isRunning and appState.screenshottingEnabled:
-        with MSS() as sct:
+        with MSS.mss() as sct:
             window = getWarframeWindow()
             screenshotParameters = {
                 "top": window.top,
@@ -40,7 +40,7 @@ def screenshotting(appState):
                 "height": window.height
             }
 
-            print(screenshotParameters)
+            #print(screenshotParameters)
             
             screenshot = sct.grab(screenshotParameters)
             fileName = "screenshot.png"
@@ -49,9 +49,9 @@ def screenshotting(appState):
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
             crop = img[380:480, 400:1520]
 
-            scanScreenshot(crop)
+            scanScreenshot(appState, crop)
 
-            cv2.imwrite(f"{ROOT_PATH}/screenshots/{fileName}", crop)
-            print(fileName)
+            #cv2.imwrite(f"{ROOT_PATH}/screenshots/{fileName}", crop)
+            #print(f"Saved to: {fileName}")
             
         time.sleep(1)
