@@ -8,6 +8,7 @@ from warframeDetector import getWarframeWindow
 from scanning import scanScreenshot
 import os
 from utility import title
+from pathlib import Path
 
 def screenshotListener(appState):
     while True:
@@ -25,8 +26,8 @@ def screenshotListener(appState):
 def toggleScreenshotting(appState):
     activeWindow = pygetwindow.getActiveWindow()
 
-    if not activeWindow or "Warframe" not in activeWindow.title:
-        print("Warframe is not focused!!")
+    if not activeWindow or "testScreenshot.png" not in activeWindow.title:
+        print("testScreenshot is not focused!!")
         return
 
     if not appState.isWarframeRunning:
@@ -44,6 +45,9 @@ def toggleScreenshotting(appState):
     print(Fore.CYAN + "Scanning enabled!" + Fore.RESET)
 
 def screenshotting(appState):
+    SCREENSHOT_PATH = Path(__file__).resolve().parent.parent / "screenshots"
+    SCREENSHOT_PATH.mkdir(exist_ok=True)
+
     while appState.isWarframeRunning and appState.screenshottingEnabled:
         with MSS.mss() as sct:
             window = getWarframeWindow()
@@ -57,15 +61,19 @@ def screenshotting(appState):
             #print(screenshotParameters)
             
             screenshot = sct.grab(screenshotParameters)
-            #fileName = "screenshot.png"
+            fileName = "screenshot.png"
+            file_path = SCREENSHOT_PATH / fileName
 
             img = np.array(screenshot)
-            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+            img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
+            img = cv2.convertScaleAbs(img, alpha=2.5, beta=0)
             crop = img[380:480, 400:1520]
 
             scanScreenshot(appState, crop)
 
-            #cv2.imwrite(f"{ROOT_PATH}/screenshots/{fileName}", crop)
-            #print(f"Saved to: {fileName}")
+            success = cv2.imwrite(str(file_path), crop)
+
+            print(f"Saved: {success}")
+            print(f"Saved to: {SCREENSHOT_PATH}\screenshots\{fileName}")
             
         time.sleep(1)

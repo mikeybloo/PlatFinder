@@ -1,11 +1,11 @@
 from colorama import Fore
 from mapHotkeys import mapHotkeysToKeyboard
 import psutil
-import keyboard
 import time
-import easyocr
+#import easyocr
 from appState import AppState
 from utility import title
+from apiHandler import getTradableVoidItems
 
 def main(appState):
     while(True):
@@ -17,11 +17,24 @@ def main(appState):
             print(Fore.RED + "Warframe is not running! Please run the game to use this tool" + Fore.RESET)
 
         time.sleep(10)
+
+def fetchItemsOnStart():
+    count = 0
+    data = getTradableVoidItems()
+
+    for item in data:
+        name = item['i18n']['en']['name']
+        if ' Prime' in name or 'Forma' in name:
+            count += 1
+            print("Item: ", name)
+        
+    print(f'Fetched {count} items in total')
         
 appState = AppState()
 
-print(Fore.YELLOW + "Initializing easyOCR..." + Fore.RESET)
-appState.reader = easyocr.Reader(['en'], gpu=False)
+print(Fore.YELLOW + "Fetching items from Warframe Market..." + Fore.RESET)
+fetchItemsOnStart()
+#appState.reader = easyocr.Reader(['en'], gpu=False)
 
 mapHotkeysToKeyboard(appState)
 appState.screenshotThread.start()

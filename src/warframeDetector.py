@@ -1,7 +1,7 @@
 import pygetwindow
 
 def getWarframeWindow():
-    gameWindows = pygetwindow.getWindowsWithTitle("Warframe")
+    gameWindows = pygetwindow.getWindowsWithTitle("testScreenshot.png")
 
     if gameWindows:
         return(gameWindows[0])

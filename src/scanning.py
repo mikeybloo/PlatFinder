@@ -1,8 +1,7 @@
 from utility import itemToSlug
-from apiHandler import getRequest
+from apiHandler import getItemRequest
 from colorama import Fore
-import keyboard
-import time
+import pytesseract
 
 def getAveragePlat(dictOrders):
     totalPlat = 0
@@ -23,7 +22,7 @@ def queryPlatPrices(listOfItems):
             itemSlug = itemToSlug(item)
             #print(f"\n Item slug generated: {itemSlug}. Now querying warframe.market...")
             
-            dictOrders = getRequest(itemSlug)
+            dictOrders = getItemRequest(itemSlug)
 
             if type(dictOrders) == list:
                 avgPlat = getAveragePlat(dictOrders)
@@ -39,13 +38,16 @@ def queryPlatPrices(listOfItems):
 
 def scanScreenshot(appState, crop):
     print("Now scanning...")
-    listOfItems = appState.reader.readtext(crop, detail=0, paragraph=True, x_ths=0.5)
+    listOfItems = pytesseract.image_to_string(crop, config='--psm 12')
+    parsedItems = listOfItems.split('\n')
     print("Scanned!")
     #print("Recognized: ", listOfItems)
 
-    if len(listOfItems) == 0:
+    if len(parsedItems) == 0:
         print("No drops detected! Make sure your enabling scanning when the drops appear on the screen!")
     else:
-        queryPlatPrices(listOfItems)
-        
+        print("Drops detected! Heres what Tesseract detected:")
+        print(parsedItems)
+        #queryPlatPrices(listOfItems)
+
     appState.screenshottingEnabled = 0
